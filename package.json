@@ -1,0 +1,84 @@
+{
+  "name": "desktop-template",
+  "version": "1.0.0",
+  "main": "build/main.js",
+  "license": "MIT",
+  "author": {
+    "name": "PlayNProvide",
+    "email": "playnprovide@gmail.com"
+  },
+  "build": {
+    "productName": "Play & Provide",
+    "appId": "com.playnprovide.app",
+    "asar": true,
+    "win": {
+      "target": "nsis"
+    },
+    "icon": "public/with-rounded-background.ico",
+    "nsis": {
+      "oneClick": true
+    },
+    "files": [
+      "build"
+    ]
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.1",
+    "shared": "^1.0.0",
+    "styled-components": "^5.3.3",
+    "zustand": "^3.7.0",
+    "electron": "^17.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@types/styled-components": "^5.1.23",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "babel-loader": "^8.2.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^10.2.0",
+    "css-loader": "^6.5.1",
+    "electron-builder": "^22.14.13",
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb": "^19.0.2",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.4.5",
+    "prettier": "^2.5.1",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.3",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.2"
+  },
+  "scripts": {
+    "prod:electron": "yarn prod:main && yarn prod:preload",
+    "prod:main": "webpack --config main.config.js --env isProduction --node-env production",
+    "prod:preload": "webpack --config preload.config.js --env isProduction --node-env production",
+    "prod:renderer": "webpack --config renderer.config.js --env isProduction --node-env production",
+    "dev:electron" : "yarn dev:main && yarn dev:preload",
+    "dev:main": "webpack --config main.config.js --node-env development",
+    "dev:preload": "webpack --config preload.config.js --node-env development",
+    "dev:renderer": "webpack --config renderer.config.js --node-env development",
+    "start": "electron .",
+    "serve": "webpack serve --config renderer.config.js --node-env development",
+    "prod:all": "yarn prod:renderer && yarn prod:main && yarn prod:preload",
+    "dev:all": "yarn prod:renderer && yarn dev:main && yarn dev:preload",
+    "package:win32": "electron-builder build --win --ia32",
+    "package:win64": "electron-builder build --win --x64"
+  }  
+}
