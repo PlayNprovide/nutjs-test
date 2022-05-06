@@ -1,6 +1,8 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { WinRef } from 'lib/type'
 import * as path from 'path'
+import { config } from './config'
+import { logger } from './logger'
 
 const mainWindow: WinRef = { current: null }
 
@@ -70,6 +72,10 @@ app
   .on('ready', createMainWindow)
   .whenReady()
   .then(registerListeners)
+  .then(() => {
+    config.set('hello', 'world')
+    logger.log('info', 'app is ready')
+  })
   .catch((e) => console.error(e))
 
 app.on('window-all-closed', () => {
