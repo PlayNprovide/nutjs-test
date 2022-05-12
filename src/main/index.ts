@@ -23,7 +23,7 @@ function createUserWindow() {
       contextIsolation: false,
       webSecurity: false,
       devTools: process.env.NODE_ENV !== 'production',
-      preload: `${__dirname}/preload/main.js`
+      preload: `${__dirname}/preload/user.js`
     }
   })
 
