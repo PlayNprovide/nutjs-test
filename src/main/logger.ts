@@ -2,6 +2,9 @@ import { app } from 'electron'
 import path from 'path'
 import winston from 'winston'
 
+// level { error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
+// default level is info, all the log with same or less level will be logged at transports
+
 export const logger = winston.createLogger({
   transports: [
     new winston.transports.File({
@@ -19,10 +22,9 @@ if (process.env.NODE_ENV !== 'production') {
       format: winston.format.combine(
         winston.format((info) => ({ ...info }))(),
         winston.format.colorize({ level: true }),
-        winston.format.printf((info) => {
-          const { source, level, message, ...meta } = info
-          return `${level} [${source}]: ${message} ${JSON.stringify(meta)}`
-        })
+        winston.format.printf(
+          ({ source, level, message, ...meta }) => `${level} [${source}]: ${message} ${JSON.stringify(meta)}`
+        )
       )
     })
   )

@@ -28,7 +28,7 @@
     "prefer-arrow-callback": "off",
     // React library
     "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": ["error"],
+    "@typescript-eslint/no-use-before-define": ["off"],
     // need to set module's base url in settings key
     "import/no-unresolved": "error",
     "import/extensions": [
