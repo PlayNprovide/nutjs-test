@@ -1,4 +1,3 @@
-import assert from 'assert'
 import { app } from 'electron'
 import Store from 'electron-store'
 import { IpcUpdateTable } from 'lib/ipc-event'
@@ -14,7 +13,6 @@ export const ipcTable = new Store<IpcTable>({
 })
 
 ipcTable.onDidAnyChange((newValue) => {
-  assert.ok(userWindow.current)
-  sendEventTo<IpcUpdateTable>(userWindow.current.webContents, 'UPDATE_TABLE', ipcTable.store)
+  sendEventTo<IpcUpdateTable>(userWindow.current?.webContents, 'UPDATE_TABLE', ipcTable.store)
   logger.info('ipcTable updated', { source: 'main', newValue })
 })

@@ -1,4 +1,3 @@
-import assert from 'assert'
 import { app } from 'electron'
 import Store from 'electron-store'
 import { IpcUpdateConfig } from 'lib/ipc-event'
@@ -21,7 +20,6 @@ export const config = new Store<Config>({
 })
 
 config.onDidAnyChange((newValue) => {
-  assert.ok(userWindow.current)
-  sendEventTo<IpcUpdateConfig>(userWindow.current.webContents, 'UPDATE_CONFIG', config.store)
+  sendEventTo<IpcUpdateConfig>(userWindow.current?.webContents, 'UPDATE_CONFIG', config.store)
   logger.info('config updated', { source: 'main', newValue })
 })
