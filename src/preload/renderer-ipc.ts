@@ -16,13 +16,15 @@ export class RendererEventHandler {
   config: Config
 
   constructor() {
-    this.ipcTable = {
-      USER: -1,
-      MAIN: -1
-    }
-    this.config = {
-      workDir: ''
-    }
+    this.ipcTable = this.getTable()
+    this.config = this.getConfig()
+
+    this.onEvent<IpcUpdateTable>('UPDATE_TABLE', (_, ipcTable) => {
+      this.ipcTable = ipcTable
+    })
+    this.onEvent<IpcUpdateConfig>('UPDATE_CONFIG', (_, config) => {
+      this.config = config
+    })
 
     this.onEvent<IpcUpdateTable>('UPDATE_TABLE', (_, ipcTable) => {
       this.ipcTable = ipcTable
@@ -50,11 +52,11 @@ export class RendererEventHandler {
 
   getTable() {
     const name: IpcGetTable['name'] = 'GET_TABLE'
-    this.ipcTable = ipcRenderer.sendSync(name) as IpcTable
+    return ipcRenderer.sendSync(name) as IpcTable
   }
 
   getConfig() {
     const name: IpcGetConfig['name'] = 'GET_CONFIG'
-    this.config = ipcRenderer.sendSync(name) as Config
+    return ipcRenderer.sendSync(name) as Config
   }
 }
