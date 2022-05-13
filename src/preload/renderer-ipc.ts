@@ -59,4 +59,8 @@ export class RendererEventHandler {
     const name: IpcGetConfig['name'] = 'GET_CONFIG'
     return ipcRenderer.sendSync(name) as Config
   }
+
+  removeListeners<TEvent extends IpcEvent>(name: TEvent extends { name: infer TName } ? TName : never) {
+    ipcRenderer.removeAllListeners(name)
+  }
 }
