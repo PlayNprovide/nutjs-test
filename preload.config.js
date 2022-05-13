@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = (env) => ({
     mode: env.isProduction ? 'production' : 'development',
     entry: {
-      'main-preload': path.resolve(__dirname, 'src/preload/main-preload.ts'),
+      'user': path.resolve(__dirname, 'src/preload/user.ts'),
     },
     output: {
       path: path.resolve(__dirname, 'build/preload'),

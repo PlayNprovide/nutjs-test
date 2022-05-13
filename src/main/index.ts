@@ -1,79 +1,35 @@
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
-import { webId } from 'lib/ipc-event'
-import { WinRef } from 'lib/type'
-import * as path from 'path'
+import { app, BrowserWindow } from 'electron'
+import { IpcGetConfig, IpcGetTable, IpcLoadUrl, IpcMessage, IpcTest } from 'lib/ipc-event'
 import { config } from './config'
+import { ipcTable } from './ipc-table'
 import { logger } from './logger'
+import { onEvent } from './main-ipc'
+import { createUserWindow } from './user-window'
 
-const userWindow: WinRef = { current: null }
+function registerListeners() {
+  onEvent<IpcMessage>('MESSAGE', (e, ...args) =>
+    logger.info(`got a message from ${e.sender.id}, ${e.processId}, ${e.frameId}, ${e.ports} : ${args}`)
+  )
+  // eslint-disable-next-line no-eval
+  onEvent<IpcTest>('TEST', (_, code) => eval(code))
 
-function createUserWindow() {
-  userWindow.current = new BrowserWindow({
-    show: false,
-    minWidth: 800,
-    minHeight: 600,
-    frame: false,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: {
-      color: '#fafafa'
-    },
-    icon: path.join(__dirname, 'with-rounded-background.ico'),
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false,
-      devTools: process.env.NODE_ENV !== 'production',
-      preload: `${__dirname}/preload/user.js`
-    }
+  onEvent<IpcLoadUrl>('LOAD_URL', (e, url) => BrowserWindow.fromWebContents(e.sender)?.loadURL(url))
+
+  // no guarantee that app is ready if you put this on making config
+  onEvent<IpcGetConfig>('GET_CONFIG', (e) => {
+    e.returnValue = config.store
   })
-
-  webId.set('USER', userWindow.current.webContents.id)
-  userWindow.current.loadFile(`${__dirname}/index.html`)
-
-  userWindow.current.on('ready-to-show', userWindow.current.show)
-  userWindow.current.webContents.setWindowOpenHandler(({ url, disposition }) => {
-    logger.info('window is openning', { disposition, source: 'userWindow' })
-    shell.openExternal(url)
-    return { action: 'deny' }
+  onEvent<IpcGetTable>('GET_TABLE', (e) => {
+    e.returnValue = ipcTable.store
   })
-
-  userWindow.current.on('closed', () => {})
-}
-
-async function registerListeners() {
-  // 콜백이 등록되는 순간에는 윈도우가 초기화되지않은 경우가 있을 수 있다
-  // 이 경우 직접 함수의 레퍼런스를 넘기는 방식으로 콜백을 등록하면 destroyed 에러가 난다
-  // 따라서 윈도우의 초기화가 보장되지 않는다면 익명함수 내에서 처리할 것
-  ipcMain.on('message', (e, ...args) => {
-    console.log(`got a message from ${e.sender.id}, ${e.processId}, ${e.frameId}, ${e.ports} : ${args}`)
-  })
-
-  ipcMain.on('close', app.quit)
-
-  ipcMain.on('test', (_, code: string) => {
-    // eslint-disable-next-line no-eval
-    eval(code)
-  })
-
-  ipcMain.on('select-folder', (e) => {
-    if (userWindow.current)
-      dialog
-        .showOpenDialog(userWindow.current, { properties: ['openDirectory'] })
-        .then(({ canceled, filePaths }) => !canceled && e.reply('path', ...filePaths))
-  })
-
-  ipcMain.on('get-path', (e, name) => e.reply('path', app.getPath(name)))
-
-  ipcMain.on('focus', () => userWindow.current?.show())
-
-  ipcMain.on('load-url', (e, _url: string) => BrowserWindow.fromWebContents(e.sender)?.loadURL(_url))
 }
 
 app.on('ready', () => {
+  ipcTable.clear()
   createUserWindow()
   registerListeners()
-  config.set('hello', 'world')
-  logger.log('info', 'app is ready')
+  config.set('update', 'value')
+  logger.log('info', 'app is ready', { source: 'main' })
 })
 
 app.on('window-all-closed', () => {

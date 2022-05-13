@@ -1,3 +1,3 @@
-import { ipcRenderer } from 'electron'
+import { RendererEventHandler } from './renderer-ipc'
 
-window.ipc = ipcRenderer
+window.evHandler = new RendererEventHandler()
