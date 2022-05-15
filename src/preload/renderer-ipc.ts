@@ -41,6 +41,13 @@ export class RendererEventHandler {
     ipcRenderer.on(name, cb)
   }
 
+  onceEvent<TEvent extends IpcEvent>(
+    name: TEvent extends { name: infer TName } ? TName : never,
+    cb: (e: IpcRendererEvent, payload: TEvent extends { payload: infer TPayload } ? TPayload : never) => void
+  ) {
+    ipcRenderer.once(name, cb)
+  }
+
   sendEvent<TEvent extends IpcEvent>(
     name: TEvent extends { name: infer TName } ? TName : never,
     target: TEvent extends { target: infer TTarget } ? TTarget : never,
