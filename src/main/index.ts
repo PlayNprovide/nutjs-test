@@ -25,7 +25,6 @@ function registerListeners() {
 }
 
 app.on('ready', () => {
-  ipcTable.clear()
   createUserWindow()
   registerListeners()
   config.set('update', 'value')
