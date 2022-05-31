@@ -14,9 +14,10 @@ module.exports = (env) => ({
     target: 'electron-main',
     plugins: [
         // This is the important part for onoff to work
-        // new webpack.ExternalsPlugin('commonjs', [
-        //     '@nut-tree/nut-js' 
-        // ])
+        new webpack.ExternalsPlugin('commonjs', [
+          '@nut-tree/nut-js',
+          '@nut-tree/template-matcher'
+        ])
     ],    
     module: {
       rules: [{
@@ -31,7 +32,7 @@ module.exports = (env) => ({
       modules: ['src', 'node_modules'],    
   },
   optimization: {
-    minimizer: [new UglifyJsPlugin()],
+    // minimizer: [new UglifyJsPlugin()],
   },    
   })
 ;

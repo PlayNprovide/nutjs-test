@@ -1,10 +1,11 @@
 import { app, BrowserWindow } from 'electron'
 import { IpcGetConfig, IpcGetTable, IpcLoadUrl, IpcMessage, IpcTest } from 'lib/ipc-event'
+import { waitForImage } from './automation'
 import { config } from './config'
 import { ipcTable } from './ipc-table'
 import { logger } from './logger'
 import { onEvent } from './main-ipc'
-import { createUserWindow } from './user-window'
+import { createTray } from './tray'
 
 function registerListeners() {
   onEvent<IpcMessage>('MESSAGE', (e, ...args) =>
@@ -25,20 +26,14 @@ function registerListeners() {
 }
 
 app.on('ready', () => {
-  createUserWindow()
-  registerListeners()
-  config.set('update', 'value')
   logger.log('info', 'app is ready', { source: 'main' })
+  registerListeners()
+  waitForImage('swap-button.png')
+  createTray()
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
-  }
-})
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createUserWindow()
   }
 })

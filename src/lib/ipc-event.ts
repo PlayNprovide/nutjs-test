@@ -1,5 +1,6 @@
 import { Config } from 'main/config'
 import { IpcTable, PTarget } from 'main/ipc-table'
+import { UserInput } from './type'
 
 interface Event<TName extends string, TTarget extends PTarget, TPayload = undefined> {
   name: TName
@@ -25,6 +26,18 @@ export type IpcMessage = Event<'MESSAGE', 'MAIN', string>
 
 export type IpcTest = Event<'TEST', 'MAIN', string>
 
+export type IpcStartWork = Event<'START_WORK', 'USER', UserInput>
+
+export type IpcLogin = Event<'LOGIN', 'MAIN'>
+
+export type IpcHideAuth = Event<'HIDE_AUTH', 'MAIN'>
+
+export type IpcShowAuth = Event<'SHOW_AUTH', 'MAIN'>
+
+export type IpcAuthState = Event<'AUTH_STATE', 'USER', boolean>
+
+export type IpcLogout = Event<'LOGOUT', 'AUTH'>
+
 export type IpcEvent =
   | IpcSetWorkDir
   | IpcGetConfig
@@ -35,3 +48,9 @@ export type IpcEvent =
   | IpcLoadUrl
   | IpcMessage
   | IpcTest
+  | IpcStartWork
+  | IpcLogin
+  | IpcHideAuth
+  | IpcShowAuth
+  | IpcLogout
+  | IpcAuthState

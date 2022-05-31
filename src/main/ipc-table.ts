@@ -6,7 +6,7 @@ import { sendEventTo } from 'main/main-ipc'
 import { userWindow } from 'main/user-window'
 
 export type IpcTable = Record<PTarget, number>
-export type PTarget = 'MAIN' | 'USER'
+export type PTarget = 'MAIN' | 'USER' | 'AUTH' | 'WORKER'
 export const ipcTable = new Store<IpcTable>({
   name: 'ipcTable',
   cwd: app.getAppPath()
